@@ -1,7 +1,9 @@
 import asyncio
 from aiohttp import ClientSession
 
-def async_get(urls):
+from src import params
+
+def async_get_all(urls):
     async def fetch(url, session):
         async with session.get(url) as response:
             return await response.read()
@@ -28,3 +30,12 @@ def chunks(lst, n):
     """Yield successive n-sized chunks from lst."""
     for i in range(0, len(lst), n):
         yield lst[i:i + n]
+
+def async_get(urls):
+    response_contents = [
+        item for url_chunk in chunks(urls,params.ASYNC_CONN_NUM) \
+        for item in async_get_all(url_chunk)
+    ]
+
+    return response_contents
+

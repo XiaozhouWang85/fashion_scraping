@@ -8,4 +8,4 @@ venv: $(CURR_DIR)/.python-versions
 
 
 deploy:
-	gcloud functions deploy scrape_hewi --runtime python37 --trigger-http --timeout=360s
+	gcloud functions deploy scrape_hewi --runtime python37 --trigger-http --timeout=360s --quiet --allow-unauthenticated

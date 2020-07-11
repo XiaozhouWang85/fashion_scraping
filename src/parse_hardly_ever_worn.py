@@ -49,6 +49,7 @@ def hewi_parse_item(item):
         err=err+'Original Price;'
         orig_price=0
     return {
+        'site':'hardlyeverwornit',
         'brand':brand,'img_src':img_src,'url':url,'title':title,'curr':curr,
         'cost':cost,'price':price,'orig_price':orig_price,'err':err
     }

@@ -4,6 +4,7 @@ import re
 import requests
 
 from src.util import async_get
+from src.bigquery import log_to_bigquery
 
 #Hardly ever worn URLs to scrape - empty pages return back empty
 FP_HOME = 'https://www.fashionphile.com/shop/new-arrivals?sort=date-desc&pageSize=180'
@@ -36,6 +37,7 @@ def fp_parse_page(resp_content):
     page_sp = soup(script_json['products'],'lxml')
     items=page_sp.findAll('div',{'class':'product_container'})
     
+    log_to_bigquery(items)
     return items
 
 def fp_get_number_of_pages():
@@ -64,6 +66,7 @@ def fp_parse_item(item):
     price=curr+cost
     orig_price=''
     return {
+        'site':'fashionphile',
         'brand':brand,'img_src':img_src,'url':url,'title':title,'curr':curr,
         'cost':cost,'price':price,'orig_price':orig_price,'err':err
     }

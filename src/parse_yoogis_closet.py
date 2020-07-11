@@ -69,6 +69,7 @@ def yc_parse_item(item):
     else:
         orig_price=''
     return {
+        'site':'yoogiscloset',
         'brand':brand,'img_src':img_src,'url':url,'title':title,'curr':curr,
         'cost':cost,'price':price,'orig_price':orig_price,'err':err
     }

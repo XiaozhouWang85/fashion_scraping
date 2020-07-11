@@ -6,6 +6,5 @@ $(CURR_DIR)/.python-versions: $(CURR_DIR)/requirements.txt
 
 venv: $(CURR_DIR)/.python-versions
 
-
 deploy:
 	gcloud functions deploy scrape_website --runtime python37 --trigger-http --timeout=360s --quiet --allow-unauthenticated

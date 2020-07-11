@@ -6,7 +6,7 @@ from src.parse_yoogis_closet import yc_fetch
 from src.parse_fashion_phile import fp_fetch
 from src import params
 
-def hello_world(request):
+def orchestrator(request):
     request_json = request.get_json()
     if request_json and 'name' in request_json:
         name = request_json['name']
@@ -14,7 +14,7 @@ def hello_world(request):
         name = 'World'
     return 'Hello, {}!\n'.format(name)
 
-#Data likely needs cleansing from scraping
+
 def scrape_website(request):
     request_json = request.get_json()
 

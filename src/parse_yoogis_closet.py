@@ -54,7 +54,7 @@ def yc_parse_item(item):
     img_src=item.find('img',{'class':'primary_image rollover'})['src']
     title=re.sub('\n|\t','',item.find('span',{'class':'product-name'}).text.strip())
     url=item.find('a',{'class':'product-image'})['href']
-    curr=''
+    curr=item.find('meta',{'itemprop':'priceCurrency'})['content']
     cost=''
     price_box=item.find('div',{'class':'price-box'})
     

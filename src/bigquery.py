@@ -20,9 +20,8 @@ def create_table_if_not_exist(project_id, dataset_id, table_id):
 
     except NotFound as error:
         table = bigquery.Table(table_ref, schema = BIGQUERY_RAW_EVENTS_SCHEMA)
-        table.time_partitioning = bigquery.TimePartitioning(type_=bigquery.TimePartitioningType.DAY)
         client.create_table(table)
-    
+
     return client, table
 
 def log_to_bigquery(json_payloads):

@@ -4,7 +4,6 @@ import re
 import requests
 
 from src.util import async_get
-from src.bigquery import log_to_bigquery
 
 #Hardly ever worn URLs to scrape - empty pages return back empty
 FP_HOME = 'https://www.fashionphile.com/shop/new-arrivals?sort=date-desc&pageSize=180'
@@ -24,7 +23,6 @@ def fp_fetch(limit):
         fp_parse_item(item) for resp_content in response_content_list \
         for item in fp_parse_page(resp_content)
     ]
-
     return all_res
 
 def fp_parse_page(resp_content):
@@ -37,7 +35,6 @@ def fp_parse_page(resp_content):
     page_sp = soup(script_json['products'],'lxml')
     items=page_sp.findAll('div',{'class':'product_container'})
     
-    log_to_bigquery(items)
     return items
 
 def fp_get_number_of_pages():
@@ -54,17 +51,24 @@ def fp_get_number_of_pages():
     
 #Item scraper for Fashionphile website
 def fp_parse_item(item):
-    links=item.findAll('a')
     brand=item.find('meta',itemprop='brand').get('content')
-    img_src=links[0].img['data-src']
-    title=links[1].text
-    url=links[1]['href']
+    try:
+        img_src=item.find('img',{'class':'product-image'}).get('data-src')
+    except:
+        try:
+            img_src=item.find('img',{'class':'product-image'}).get('src')
+        except:
+            img_src="https://www.fashionphile.com/images/zen.png"
+    
+    title=item.find('h4',{'class':'product-title'})['content']
+    url=item.find('a')['href']
     err=''
-    curr=''
-    cost=item.find('div',{'class':'price'}).span.text
+    curr=item.find('meta',{'itemprop':'priceCurrency'})['content']
+    cost=item.find('div',{'class':'price'}).span['content']
 
     price=curr+cost
     orig_price=''
+
     return {
         'site':'fashionphile',
         'brand':brand,'img_src':img_src,'url':url,'title':title,'curr':curr,

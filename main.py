@@ -4,6 +4,7 @@ from flask import request
 from src.parse_hardly_ever_worn import hewi_fetch
 from src.parse_yoogis_closet import yc_fetch
 from src.parse_fashion_phile import fp_fetch
+from src.bigquery import log_to_bigquery
 from src import params
 
 def orchestrator(request):
@@ -33,6 +34,14 @@ def scrape_website(request):
     elif website == "yoogicloset":
         scraped_data = yc_fetch(limit)
     elif website == "fashionphile":
-        scraped_data = fp_fetch(limit)        
+        scraped_data = fp_fetch(limit)
+
+    if request_json and 'log_to_bigquery' in request_json:
+        if request_json['log_to_bigquery'] == False:
+            pass
+        else:
+            log_to_bigquery(scraped_data)
+    else:
+        log_to_bigquery(scraped_data)
 
     return json.dumps(scraped_data)

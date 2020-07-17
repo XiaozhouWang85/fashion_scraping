@@ -6,6 +6,10 @@ $(CURR_DIR)/.python-versions: $(CURR_DIR)/requirements.txt
 
 venv: $(CURR_DIR)/.python-versions
 
+deploy-staging:
+	gcloud functions deploy scrape_website --project "fashion-scraping-staging" \
+	--runtime python37 --trigger-http --timeout=360s --quiet --allow-unauthenticated
 
-deploy:
-	gcloud functions deploy scrape_hewi --runtime python37 --trigger-http --timeout=360s
+deploy-prod:
+	gcloud functions deploy scrape_website --project "fashion-scraping" \
+	--runtime python37 --trigger-http --timeout=360s --quiet --allow-unauthenticated

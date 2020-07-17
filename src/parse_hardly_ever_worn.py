@@ -1,11 +1,18 @@
-import re
-
 from bs4 import BeautifulSoup as soup
-import requests
+import re
 
 from src.util import async_get
 
-def hew_fetch(urls):
+#Hardly ever worn URLs to scrape - empty pages return back empty
+HEWI_URLS=[
+    "https://www.hardlyeverwornit.com/search_results.php?items=newin&orderby=2&order=0&p=" + str(x) for x in list(range(1,26))
+]
+
+def hewi_fetch(limit):
+    if not(limit is None):
+        urls = HEWI_URLS[:limit]
+    else:
+        urls = HEWI_URLS
     response_content_list = async_get(urls)
     all_res = [
         hewi_parse_item(item) for resp_content in response_content_list \
@@ -42,6 +49,7 @@ def hewi_parse_item(item):
         err=err+'Original Price;'
         orig_price=0
     return {
+        'site':'hardlyeverwornit',
         'brand':brand,'img_src':img_src,'url':url,'title':title,'curr':curr,
         'cost':cost,'price':price,'orig_price':orig_price,'err':err
     }

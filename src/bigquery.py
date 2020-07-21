@@ -24,6 +24,24 @@ def create_table_if_not_exist(project_id, dataset_id, table_id):
 
     return client, table
 
+def empty_table(project_id, dataset_id, table_id):
+    client = bigquery.Client(project_id)
+    dataset_ref = bigquery.DatasetReference(project_id, dataset_id)
+    table_ref = dataset_ref.table(table_id)
+    
+    job_config = bigquery.QueryJobConfig()
+    job_config.destination = dataset_ref.table(table_id)
+    job_config.write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
+
+    sql = """
+        SELECT * 
+        FROM `{}`.`{}`.`{}` LIMIT 0;
+    """.format(project_id, dataset_id, table_id)
+    
+    query_job = client.query(sql,location='US',job_config=job_config)
+
+    return list(query_job.result())
+
 def log_to_bigquery(json_payloads):
 
     client, table = create_table_if_not_exist(params.GOOGLE_CLOUD_PROJECT, params.BIGQUERY_DATASET, params.BIGQUERY_TABLE)
@@ -34,6 +52,11 @@ def log_to_bigquery(json_payloads):
     errors = client.insert_rows(table, data_row)
     return errors
 
+def reset_logged_data():
+
+    errors = empty_table(params.GOOGLE_CLOUD_PROJECT, params.BIGQUERY_DATASET, params.BIGQUERY_TABLE)
+
+    return errors
 
 def parse_payload(payload):
     payload_str = json.dumps(payload)

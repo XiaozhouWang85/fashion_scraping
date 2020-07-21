@@ -1,3 +1,4 @@
+import json
 import asyncio
 from aiohttp import ClientSession
 
@@ -47,10 +48,9 @@ def async_get(urls, payloads=None):
 
     return response_contents
 
-
 def async_post(urls, payloads):
     async def fetch(url, session, payload):
-        async with session.post(url,data = payload) as response:
+        async with session.post(url,data = json.dumps(payload)) as response:
             return await response.read()
 
     async def run(urls,payloads=payloads):
@@ -58,9 +58,9 @@ def async_post(urls, payloads):
 
         # Fetch all responses within one Client session,
         # keep connection alive for all requests.
-        async with ClientSession() as session:
-            for url, params in zip(urls,payload):
-                task = asyncio.ensure_future(fetch(url, session, params=params))
+        async with ClientSession(headers={'Content-Type': 'application/json'}) as session:
+            for url, params in zip(urls,payloads):
+                task = asyncio.ensure_future(fetch(url, session, payload=params))
                 tasks.append(task)
             responses = await asyncio.gather(*tasks)
             # you now have all response bodies in this variable

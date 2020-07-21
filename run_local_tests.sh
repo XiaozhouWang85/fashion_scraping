@@ -1,5 +1,6 @@
 #Set current directory
-export CURR_DIR="$(dirname "${BASH_SOURCE[0]}")"
+export CURR_DIR="$(pwd)"
+export PYENV_NAME="$(basename "$(pwd)")"
 export GCLOUD_PROJECT='fashion-scraping-staging'
 
 #Build the 

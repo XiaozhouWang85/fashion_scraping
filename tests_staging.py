@@ -1,7 +1,8 @@
+import os
 import json
 import requests
 from src import params
-from src.bigquery import reset_logged_data
+from src.bigquery import reset_logged_data, run_sql_file
 from unittest.mock import Mock
 
 import main
@@ -43,3 +44,15 @@ def test_orchestrator_staging():
     
     assert len(data) > 0
     assert type(data[0]) is dict
+
+def test_sql():
+
+    errors = run_sql_file(
+        'fashion-scraping-staging', 
+        'prod', 
+        'raw_events', 
+        'parsed_events', 
+        os.path.join('src','sql','parse_raw_events.sql')
+    )
+
+    assert errors is None

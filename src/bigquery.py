@@ -40,7 +40,7 @@ def empty_table(project_id, dataset_id, table_id):
     
     query_job = client.query(sql,location='US',job_config=job_config)
 
-    return list(query_job.result())
+    return query_job.errors
 
 def log_to_bigquery(json_payloads):
 
@@ -63,3 +63,30 @@ def parse_payload(payload):
     site = payload['site']
     
     return (site, datetime.now().strftime('%Y-%m-%d %H:%M:%S'), payload_str)
+
+
+def sql_to_table(project_id, dataset_id, table_id,sql):
+    client = bigquery.Client(project_id)
+    dataset_ref = bigquery.DatasetReference(project_id, dataset_id)
+    table_ref = dataset_ref.table(table_id)
+    
+    job_config = bigquery.QueryJobConfig()
+    job_config.destination = dataset_ref.table(table_id)
+    job_config.write_disposition = bigquery.WriteDisposition.WRITE_TRUNCATE
+    
+    query_job = client.query(sql,location='US',job_config=job_config)
+
+    return query_job.errors
+
+def run_sql_file(project_id, dataset_id, from_table_id, to_table_id, file):
+    
+    with open(file, 'r') as f:
+        sql_template = f.read()
+        print(sql_template)
+        
+        sql = sql_template.format(project=project_id, dataset=dataset_id, table=from_table_id)
+        print(sql)
+    
+    query_job = sql_to_table(project_id, dataset_id, to_table_id,sql)
+
+    return query_job

@@ -82,10 +82,8 @@ def run_sql_file(project_id, dataset_id, from_table_id, to_table_id, file):
     
     with open(file, 'r') as f:
         sql_template = f.read()
-        print(sql_template)
         
         sql = sql_template.format(project=project_id, dataset=dataset_id, table=from_table_id)
-        print(sql)
     
     query_job = sql_to_table(project_id, dataset_id, to_table_id,sql)
 

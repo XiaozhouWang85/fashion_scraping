@@ -5,6 +5,7 @@ from src.parse_hardly_ever_worn import hewi_fetch
 from src.parse_yoogis_closet import yc_fetch
 from src.parse_fashion_phile import fp_fetch
 from src.bigquery import log_to_bigquery
+from src.data_pipeline import run_data_pipeline
 from src.util import async_post
 
 from src import params
@@ -24,8 +25,10 @@ def orchestrator(request):
         content for resp_contents in async_post(url,payloads) \
         for content in json.loads(resp_contents)
     ]
+
+    run_data_pipeline()
     
-    return json.dumps(data)
+    return json.dumps(data[:3])
 
 
 def scrape_website(request):
@@ -56,4 +59,4 @@ def scrape_website(request):
     else:
         log_to_bigquery(scraped_data)
 
-    return json.dumps(scraped_data)
+    return json.dumps(scraped_data[:3])

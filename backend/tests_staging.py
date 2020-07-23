@@ -10,7 +10,35 @@ import main
 def test_staging_data_reset():
     errors = reset_logged_data()
     
-    assert len(errors) == 0
+    assert errors is None
+
+def test_sql():
+
+    errors = run_sql_file(
+        'fashion-scraping-staging', 
+        'prod', 
+        'raw_events', 
+        'parsed_events', 
+        os.path.join('src','sql','parse_raw_events.sql')
+    )
+
+    errors = run_sql_file(
+        'fashion-scraping-staging', 
+        'prod', 
+        'parsed_events', 
+        'tagged_episodes', 
+        os.path.join('src','sql','tag_episodes.sql')
+    )
+    
+    errors = run_sql_file(
+        'fashion-scraping-staging', 
+        'prod', 
+        'tagged_episodes', 
+        'latest_items', 
+        os.path.join('src','sql','latest_items.sql')
+    )
+
+    assert errors is None
 
 def test_endpoint():
 
@@ -44,15 +72,3 @@ def test_orchestrator_staging():
     
     assert len(data) > 0
     assert type(data[0]) is dict
-
-def test_sql():
-
-    errors = run_sql_file(
-        'fashion-scraping-staging', 
-        'prod', 
-        'raw_events', 
-        'parsed_events', 
-        os.path.join('src','sql','parse_raw_events.sql')
-    )
-
-    assert errors is None

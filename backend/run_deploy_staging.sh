@@ -4,10 +4,9 @@ export PARENT_DIR="$(dirname "$CURR_DIR")"
 export PYENV_NAME="$(basename "$PARENT_DIR").$(basename "$CURR_DIR")"
 export GCLOUD_PROJECT='fashion-scraping-staging'
 
-echo "Building python environment"
+echo "Deploying to staging"
 cd $PARENT_DIR
-make venv
+make deploy-staging
 
-echo "Running local tests"
-cd $CURR_DIR
-pytest tests_local.py
+echo "Deploying website"
+make deploy-website-staging

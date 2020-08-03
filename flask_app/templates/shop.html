@@ -256,43 +256,29 @@
                                     </select><div class="nice-select p-show" tabindex="0"><span class="current">Show:</span><ul class="list"><li data-value="" class="option selected focus">Show:</li></ul></div>
                                 </div>
                             </div>
-                            <div class="col-lg-5 col-md-5 text-right">
-                                <p>Show 01- 09 Of 36 Product</p>
+                            <div class="col-lg-5 col-md-5">
+
+                                <div class="pagination">
+                                    <p>
+                                    {% if pagination.prev_url %}
+                                    <a href="{{ pagination.prev_url }}">Prev</a>
+                                    {% endif %}
+                                     {{ pagination.page}} of {{ pagination.total_pages}} 
+                                    {% if pagination.next_url %}
+                                    <a href="{{ pagination.next_url }}">Next</a>
+                                    {% endif %}
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="product-list">
                         <div class="row">
+                            {% for item in items %}
                             <div class="col-lg-4 col-sm-6">
                                 <div class="product-item">
                                     <div class="pi-pic">
-                                        <img src="https://d38r3tbvwkical.cloudfront.net/images/216/picture/216892_1.jpg?c=1595167789" alt="">
-                                        <div class="sale pp-sale">Sale</div>
-                                        <div class="icon">
-                                            <i class="icon_heart_alt"></i>
-                                        </div>
-                                        <ul>
-                                            <li class="w-icon active"><a href="#"><i class="icon_bag_alt"></i></a></li>
-                                            <li class="quick-view"><a href="#">+ Quick View</a></li>
-                                            <li class="w-icon"><a href="#"><i class="fa fa-random"></i></a></li>
-                                        </ul>
-                                    </div>
-                                    <div class="pi-text">
-                                        <div class="catagory-name">Towel</div>
-                                        <a href="#">
-                                            <h5>Pure Pineapple</h5>
-                                        </a>
-                                        <div class="product-price">
-                                            $14.00
-                                            <span>$35.00</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-sm-6">
-                                <div class="product-item">
-                                    <div class="pi-pic">
-                                        <img src="https://www.fashionphile.com/images/product-images/thumb/4d2c0ecb1a126f5aeeead87ed4ed0453/0544db74ed9288b14d39806aff62487d.jpg" alt="">
+                                        <img src="{{ item.url}}" alt="">
                                         <div class="icon">
                                             <i class="icon_heart_alt"></i>
                                         </div>
@@ -305,7 +291,7 @@
                                     <div class="pi-text">
                                         <div class="catagory-name">Coat</div>
                                         <a href="#">
-                                            <h5>Guangzhou sweater</h5>
+                                            <h5>{{ item.text}}</h5>
                                         </a>
                                         <div class="product-price">
                                             $13.00
@@ -314,56 +300,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-4 col-sm-6">
-                                <div class="product-item">
-                                    <div class="pi-pic">
-                                        <img src="img/products/product-3.jpg" alt="">
-                                        <div class="icon">
-                                            <i class="icon_heart_alt"></i>
-                                        </div>
-                                        <ul>
-                                            <li class="w-icon active"><a href="#"><i class="icon_bag_alt"></i></a></li>
-                                            <li class="quick-view"><a href="#">+ Quick View</a></li>
-                                            <li class="w-icon"><a href="#"><i class="fa fa-random"></i></a></li>
-                                        </ul>
-                                    </div>
-                                    <div class="pi-text">
-                                        <div class="catagory-name">Shoes</div>
-                                        <a href="#">
-                                            <h5>Guangzhou sweater</h5>
-                                        </a>
-                                        <div class="product-price">
-                                            $34.00
-                                            <span>$35.00</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-sm-6">
-                                <div class="product-item">
-                                    <div class="pi-pic">
-                                        <img src="img/products/product-4.jpg" alt="">
-                                        <div class="icon">
-                                            <i class="icon_heart_alt"></i>
-                                        </div>
-                                        <ul>
-                                            <li class="w-icon active"><a href="#"><i class="icon_bag_alt"></i></a></li>
-                                            <li class="quick-view"><a href="#">+ Quick View</a></li>
-                                            <li class="w-icon"><a href="#"><i class="fa fa-random"></i></a></li>
-                                        </ul>
-                                    </div>
-                                    <div class="pi-text">
-                                        <div class="catagory-name">Coat</div>
-                                        <a href="#">
-                                            <h5>Microfiber Wool Scarf</h5>
-                                        </a>
-                                        <div class="product-price">
-                                            $64.00
-                                            <span>$35.00</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            {% endfor %}
+                      
                             <div class="col-lg-4 col-sm-6">
                                 <div class="product-item">
                                     <div class="pi-pic">

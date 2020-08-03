@@ -1153,6 +1153,7 @@ ol {
 
 .product-item {
 	margin-bottom: 26px;
+	height: 400px;
 }
 
 .product-item:hover .pi-pic .icon {
@@ -1171,6 +1172,8 @@ ol {
 
 .product-item .pi-pic img {
 	min-width: 100%;
+	height:300px;
+    object-fit: contain;
 }
 
 .product-item .pi-pic .sale {
@@ -2013,16 +2016,26 @@ ol {
 	font-size: 16px;
 	color: #252525;
 }
+.product-show-option .pagination {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	justify-content: flex-end;
+}
 
-.product-show-option p {
-	margin-bottom: 0;
+.product-show-option .pagination p {
+
 	color: #636363;
-	line-height: 39px;
+	font-size: 17px;
 }
 
-.prduct-list .product-item {
-	margin-bottom: 25px;
+.product-show-option .pagination a {
+
+	color: #e7ab3c;
+	font-size: 17px;
+	
 }
+
 
 .loading-more {
 	text-align: center;

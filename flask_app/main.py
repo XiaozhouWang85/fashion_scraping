@@ -1,7 +1,8 @@
 
 from flask import Flask, render_template, redirect, request, url_for
 from src.config import Config
-from src.forms import LoginForm
+from src.forms import PageSelect, NavPanel
+from src.test_data import SAMPLE_DATA
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -9,56 +10,57 @@ app.config.from_object(Config)
 
 @app.route("/")
 def homepage():
-    return render_template("page.html", title="HOME PAGE")
-
-@app.route("/docs")
-def docs():
-    return render_template("page.html", title="docs page")
-
-@app.route("/about")
-def about():
-    return render_template("page.html", title="about page")
-
-@app.route("/shop", methods=['GET', 'POST'])
-def shop():
+    return redirect('/items')
+    
+@app.route("/items", methods=['GET', 'POST'])
+def items():
     page = request.args.get('page', 1, type=int)
     total_pages = 15
+    page_form = PageSelect()
+    nav = NavPanel()
 
-    form = LoginForm()
-    if form.validate_on_submit():
-        print('Login requested for user {}, remember_me={}'.format(
-            form.username.data, form.remember_me.data))
-        return redirect('/shop')
+    page_form.page.choices = [(x+1,x+1) for x in range(max(total_pages,10))]
 
-    items = [
-        {
-            'url': "https://www.fashionphile.com/images/product-images/thumb/4d2c0ecb1a126f5aeeead87ed4ed0453/0544db74ed9288b14d39806aff62487d.jpg",
-            "text": "A jumper"
-        },
-        {
-            'url': "https://d38r3tbvwkical.cloudfront.net/images/216/picture/216892_1.jpg?c=1595167789",
-            "text": "Another jumper"
-        },
-        {
-            'url': "https://www.fashionphile.com/images/product-images/thumb/4d2c0ecb1a126f5aeeead87ed4ed0453/0544db74ed9288b14d39806aff62487d.jpg",
-            "text": "a sweater"
-        },
-        {
-            'url': "https://d38r3tbvwkical.cloudfront.net/images/216/picture/216892_1.jpg?c=1595167789",
-            "text": "a sweater 2"
-        }
+    if request.method == "POST":
+        payload = request.form.to_dict()
+        if "page" in payload:
+            page = int(payload["page"])
 
-    ]
+        if "submit" in payload:
+            
+            maxamount = payload["maxamount"]
+            minamount = payload["minamount"]
+
+            if 'active_check' in payload:
+                active_check = payload["active_check"]
+            else:
+                active_check = 'n'
+
+            if 'sold_check' in payload:
+                sold_check = payload["sold_check"]
+            else:
+                sold_check = 'n'
+
+            date_selection = payload["date_selection"]
+
+            print([maxamount,minamount,active_check,sold_check,date_selection])
+
+    if page_form.validate_on_submit():
+        return redirect('/items')
+
+    if nav.validate_on_submit():
+        return redirect('/items')
+
 
     if page + 1 > total_pages:
         next_url = None
     else:
-        next_url = url_for('shop', page=page+1)
+        next_url = url_for('items', page=page+1)
 
     if page - 1 <= 0:
         prev_url = None
     else:
-        prev_url = url_for('shop', page=page-1)
+        prev_url = url_for('items', page=page-1)
 
     pagination = {
         "next_url" : next_url,
@@ -68,8 +70,8 @@ def shop():
     }
     
     return render_template(
-        "shop.html", title="about page", form=form, items=items,
-         pagination=pagination, )
+        "items.html", title="about page", page_form=page_form, items=SAMPLE_DATA[:9],
+         nav=nav, pagination=pagination, )
 
 
 if __name__ == "__main__":

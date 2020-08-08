@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup as soup
 import re
 
-from src.util import async_get
+from src.util import async_get, get_gcp_logger
 
 #Hardly ever worn URLs to scrape - empty pages return back empty
 HEWI_URLS=[
@@ -9,17 +9,39 @@ HEWI_URLS=[
 ]
 
 def hewi_fetch(limit):
-    if not(limit is None):
-        urls = HEWI_URLS[:limit]
-    else:
-        urls = HEWI_URLS
-    response_content_list = async_get(urls)
-    all_res = [
-        hewi_parse_item(item) for resp_content in response_content_list \
-        for item in hewi_parse_page(resp_content)
-    ]
+    logger = get_gcp_logger()
 
-    return all_res
+    log_message = {}
+    log_message.update({
+        "Website":"Hardly Ever Worn It",
+        "Process Start":"Scraper process starting for ⚙️"
+    })
+
+    try:
+        if not(limit is None):
+            urls = HEWI_URLS[:limit]
+        else:
+            urls = HEWI_URLS
+
+        response_content_list = async_get(urls)
+
+        all_res = [
+            hewi_parse_item(item) for resp_content in response_content_list \
+            for item in hewi_parse_page(resp_content)
+        ]
+
+        log_message.update({
+            "Process End":"Successfully parsed results 📝"
+        })
+        logger.log_struct(log_message, 'INFO')
+        return all_res
+
+    except Exception as e:
+        log_message.update({
+            "Process End": str(e)
+        })
+        logger.log_struct(log_message, 'ERROR')
+    
 
 #Item scraper for Hardly Ever Worn It website
 def hewi_parse_page(resp_content):

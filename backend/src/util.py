@@ -1,8 +1,29 @@
 import json
 import asyncio
 from aiohttp import ClientSession
+from google.cloud import logging
+from google.cloud.logging.resource import Resource
 
 from src import params
+
+class gcp_logger:
+    def __init__(self):
+        log_client = logging.Client(params.GOOGLE_CLOUD_PROJECT)
+        log_name = "cloudfunctions.googleapis.com%2Fcloud-functions"
+        self.res = Resource(type="cloud_function", 
+                       labels={
+                           "function_name": params.GOOGLE_CLOUD_PROJECT, 
+                           "region": params.GOOGLE_CLOUD_REGION
+                       },
+                      )
+        self.logger = log_client.logger(log_name.format(params.GOOGLE_CLOUD_PROJECT))
+    
+    def log_struct(self, log_dict,severity):
+        self.logger.log_struct(log_dict, resource=self.res, severity=severity)
+        return 'Wrote logs to {}.'.format(self.logger.name)
+
+def get_gcp_logger():
+    return gcp_logger()
 
 def async_get_all(urls, payload=None):
     async def fetch(url, session, **kwargs):

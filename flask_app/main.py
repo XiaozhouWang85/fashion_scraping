@@ -43,8 +43,6 @@ def items():
 
             date_selection = payload["date_selection"]
 
-            print([maxamount,minamount,active_check,sold_check,date_selection])
-
     if page_form.validate_on_submit():
         return redirect('/items')
 

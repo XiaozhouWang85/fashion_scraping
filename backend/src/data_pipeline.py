@@ -12,7 +12,7 @@ def run_data_pipeline():
         'parsed_events', 
         os.path.join('src','sql','parse_raw_events.sql')
     )
-
+    
     errors = run_sql_file(
         params.GOOGLE_CLOUD_PROJECT, 
         params.BIGQUERY_DATASET, 

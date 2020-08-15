@@ -7,6 +7,3 @@ export GCLOUD_PROJECT='fashion-scraping-staging'
 echo "Deploying to staging"
 cd $PARENT_DIR
 make deploy-staging
-
-echo "Deploying website"
-make deploy-website-staging

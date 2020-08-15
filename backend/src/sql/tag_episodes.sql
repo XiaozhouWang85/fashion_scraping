@@ -46,7 +46,8 @@ episode_identified AS (
 episodes_tagged AS (
 
   SELECT 
-  *,
+  * EXCEPT(price),
+  LAST_VALUE(price IGNORE NULLS) OVER(item_part_asc) AS price,
   ROW_NUMBER() OVER(episode_part_rev) AS episode_rank_rev,
   ROW_NUMBER() OVER(item_part_rev) AS rank_rev,
   MIN(insertion_timestamp) OVER(episode_part) AS episode_start_ts,
@@ -63,6 +64,9 @@ episodes_tagged AS (
   ),
   item_part_rev AS (
       PARTITION BY item_ID ORDER BY insertion_timestamp DESC
+  ),
+  item_part_asc AS (
+      PARTITION BY item_ID ORDER BY insertion_timestamp
   ),
   item_part AS (
     PARTITION BY item_ID ORDER BY insertion_timestamp 
@@ -91,6 +95,8 @@ rank_rev,
 episode_start_ts,
 episode_end_ts,
 first_seen_ts,
-latest_seen_ts
+latest_seen_ts,
+TIMESTAMP_DIFF(CURRENT_TIMESTAMP(),episode_start_ts,MINUTE) / (60 *24) AS days_since_update,
+TIMESTAMP_DIFF(CURRENT_TIMESTAMP(),latest_seen_ts,MINUTE) / (60 *24) AS days_since_seen,
 FROM episodes_tagged
 WHERE episode_rank_rev=1

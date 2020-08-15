@@ -1,6 +1,8 @@
 import os
 
 GOOGLE_CLOUD_PROJECT = os.environ['GCLOUD_PROJECT']
+GOOGLE_CLOUD_REGION = 'us-central1'
+GOOGLE_CLOUD_LOG = 'fashion-scraping-log'
 
 BIGQUERY_DATASET = 'prod'
 BIGQUERY_TABLE = 'raw_events'
@@ -24,3 +26,5 @@ SITES = [
     "yoogiscloset",
     "fashionphile"
 ]
+
+

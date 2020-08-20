@@ -1,8 +1,10 @@
 
-from flask import Flask, render_template, redirect, request, url_for
+from flask import Flask, render_template, request, redirect, url_for
 from src.config import Config
 from src.forms import PageSelect, NavPanel
 from src.test_data import SAMPLE_DATA
+from src.firestore import query_firestore
+from src.request_parse import request_parse
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -14,62 +16,65 @@ def homepage():
     
 @app.route("/items", methods=['GET', 'POST'])
 def items():
-    page = request.args.get('page', 1, type=int)
-    total_pages = 15
-    page_form = PageSelect()
-    nav = NavPanel()
 
-    page_form.page.choices = [(x+1,x+1) for x in range(max(total_pages,10))]
+    max_price_items = 10000
 
-    if request.method == "POST":
-        payload = request.form.to_dict()
-        if "page" in payload:
-            page = int(payload["page"])
+    defaults = {
+        'maxamount': max_price_items,
+        'minamount': 0,
+        'date_selection': 'Last 1 day',
+        'page': 1
+    }
 
-        if "submit" in payload:
-            
-            maxamount = payload["maxamount"]
-            minamount = payload["minamount"]
+    form_dict = request_parse(request,defaults)
 
-            if 'active_check' in payload:
-                active_check = payload["active_check"]
-            else:
-                active_check = 'n'
+    results_dict, end_query = query_firestore(form_dict)
 
-            if 'sold_check' in payload:
-                sold_check = payload["sold_check"]
-            else:
-                sold_check = 'n'
+    if len(results_dict)>0:
+        first_doc_id = results_dict[0]["item_ID"]
+        last_doc_id = results_dict[-1]["item_ID"]
+    else:
+        first_doc_id = None
+        last_doc_id = None
+        end_query = True
 
-            date_selection = payload["date_selection"]
 
-    if page_form.validate_on_submit():
-        return redirect('/items')
+    page = int(form_dict['page'])
+
+    nav = NavPanel(
+        active_check=form_dict['active_check'],
+        maxamount = form_dict['maxamount'],
+        minamount = form_dict['minamount'],
+        sold_check = form_dict['sold_check'],
+        date_selection = form_dict['date_selection']
+    )
+    nav.first_doc_id.data = first_doc_id
+    nav.last_doc_id.data = last_doc_id
+    nav.page.data = page
 
     if nav.validate_on_submit():
         return redirect('/items')
 
-
-    if page + 1 > total_pages:
+    print(end_query)
+    if end_query:
         next_url = None
     else:
-        next_url = url_for('items', page=page+1)
+        next_url = "blah"
 
     if page - 1 <= 0:
         prev_url = None
     else:
-        prev_url = url_for('items', page=page-1)
+        prev_url = url_for('items', page=page-1, doc_id=first_doc_id, type='prev')
 
     pagination = {
         "next_url" : next_url,
         "prev_url" : prev_url,
-        "page" : page,
-        "total_pages" : total_pages
+        "page" : page
     }
     
     return render_template(
-        "items.html", title="about page", page_form=page_form, items=SAMPLE_DATA[:9],
-         nav=nav, pagination=pagination, )
+        "items.html", title="about page", items=results_dict[:9],
+         nav=nav, pagination=pagination, max_price_items=max_price_items )
 
 
 if __name__ == "__main__":

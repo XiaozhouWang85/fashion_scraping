@@ -4,6 +4,7 @@ from unittest.mock import Mock
 import main
 from src.bigquery import log_to_bigquery
 
+
 def test_log_to_bigquery():
     data = [
         {'site':'fashionphile','blah':'blahblahblah','test':'more test data'},
@@ -47,4 +48,3 @@ def test_scrape_hewi():
     
     assert len(scraped_data) > 0
     assert type(scraped_data[0]) is dict
-

@@ -206,6 +206,21 @@
         $(".fw-size-choose .sc-item label, .pd-size-choose .sc-item label").removeClass('active');
         $(this).addClass('active');
     });
+        
+    $(document).ready(function() {
+
+        $('.fw-size-choose .sc-item, .pd-size-choose .sc-item').each(function() {             
+            var select_attr = $(this).find("input").attr('checked');
+            if(typeof select_attr !== typeof undefined)
+            {
+
+                $(this).find('label').addClass('active');
+            }
+        });
+
+    });
+
+    
     
    
     /*-------------------

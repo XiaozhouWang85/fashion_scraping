@@ -39,8 +39,8 @@ parsed_data AS (
         WHEN curr="€" THEN "€"
         WHEN curr="$" THEN "$"
     END AS curr_symbol,
-    SAFE_CAST(REGEXP_REPLACE(cost,r"[\$\,]*","") AS NUMERIC) AS cost,
-    SAFE_CAST(REGEXP_REPLACE(price,r"[\$\,]*","") AS NUMERIC) AS price,
+    SAFE_CAST(REGEXP_REPLACE(cost,r"[\$\,]*","") AS FLOAT64) AS cost,
+    SAFE_CAST(REGEXP_REPLACE(price,r"[\$\,]*","") AS FLOAT64) AS price,
     orig_price,
     CASE
         WHEN website = "yoogiscloset" 

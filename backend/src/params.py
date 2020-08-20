@@ -7,6 +7,8 @@ GOOGLE_CLOUD_LOG = 'fashion-scraping-log'
 BIGQUERY_DATASET = 'prod'
 BIGQUERY_TABLE = 'raw_events'
 
+FIRESTORE_MAX = 499
+
 #Number of connections to set up when scraping asynchronously
 ASYNC_CONN_NUM = 10
 

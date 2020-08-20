@@ -9,13 +9,13 @@ venv: $(CURR_DIR)/.python-versions
 
 deploy-staging:
 	cd $(CURR_DIR) && \
-	pytest tests_staging.py && \
 	gcloud functions deploy scrape_website --project "fashion-scraping-staging" \
 	--runtime python37 --trigger-http --timeout=9m --quiet --allow-unauthenticated \
 	--memory 1024MB && \
 	gcloud functions deploy orchestrator --project "fashion-scraping-staging" \
 	--runtime python37 --trigger-http --timeout=9m --quiet --allow-unauthenticated \
-	--memory 1024MB
+	--memory 1024MB && \
+	pytest tests_staging.py
 
 deploy-prod:
 	cd $(CURR_DIR) && \
@@ -32,7 +32,9 @@ deploy-prod:
 	--oidc-service-account-email=fashion-scraping@appspot.gserviceaccount.com
 
 deploy-website-prod:
+	cd $(CURR_DIR) && \
 	gcloud app deploy --project "fashion-scraping" --quiet
 
 deploy-website-staging:
+	cd $(CURR_DIR) && \
 	gcloud app deploy --project "fashion-scraping-staging" --quiet

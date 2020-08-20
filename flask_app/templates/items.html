@@ -20,6 +20,8 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery-ui.min.css') }}" type="text/css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/slicknav.min.css') }}" type="text/css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css">
+
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
 </head>
 
 <body>
@@ -64,12 +66,15 @@
 
     <!-- Product Shop Section Begin -->
     <section class="product-shop spad">
+        <form method=post action="/items" id="nav_form">
         <div class="container">
             <div class="row">
                 <div class="col-lg-3 col-md-6 col-sm-8 order-2 order-lg-1 produts-sidebar-filter">
-                    <form method=post action="/items">
                         <div class="filter-widget">
-                            <h4 class="fw-title">Listing Time</h4>
+                            <h4 class="fw-title">Time Updated</h4>
+                            {{ nav.first_doc_id() }}
+                            {{ nav.last_doc_id() }}
+                            {{ nav.page() }}
                             <div class="fw-size-choose">
                                 {% for subfield in nav.date_selection %}
                                 <div class="sc-item">
@@ -107,7 +112,7 @@
                                         {{ nav.maxamount() }}
                                     </div>
                                 </div>
-                                <div class="price-range ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content" data-min="33" data-max="98" data-test="100">
+                                <div class="price-range ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content" data-min="0" data-max="{{ max_price_items }}">
                                     <div class="ui-slider-range ui-corner-all ui-widget-header"></div>
                                     <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default" style="left: 1.53846%;"></span>
                                     <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default" style="left: 55.3846%;"></span>
@@ -115,37 +120,28 @@
                             </div>
                             {{ nav.submit(**{"class":"filter-btn"}) }}
                         </div>
-                    </form>
+                    
                 </div>
                 <div class="col-lg-9 order-1 order-lg-2">
                     <div class="product-show-option">
                         <div class="row">
                             <div class="col-lg-1 col-md-1">
-                                <div class="pagination">
-                                    <p>
-                                    Page
-                                    </p>
-                                </div>
                             </div>
                             <div class="col-lg-4 col-md-4">
-                                <div class="select-option">                                    
-                                    <form method=post action="/items">
-                                        {{ page_form.page(**{"onchange":"this.form.submit()","class":"sorting"}) }}
-                                    </form>
-                                </div>
                             </div>
                             <div class="col-lg-7 col-md-7">
 
                                 <div class="pagination">
                                     <p>
                                     {% if pagination.prev_url %}
-                                    <a href="{{ pagination.prev_url }}">Prev</a>
+                                        {{ nav.prev_submit(**{"class":"link-button"}) }}
                                     {% endif %}
-                                     {{ pagination.page}} of {{ pagination.total_pages}} 
+                                    {{ pagination.page}}
                                     {% if pagination.next_url %}
-                                    <a href="{{ pagination.next_url }}">Next</a>
+                                        {{ nav.next_submit(**{"class":"link-button"}) }}
                                     {% endif %}
                                     </p>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -181,6 +177,7 @@
                 </div>
             </div>
         </div>
+        </form>
     </section>
 
     <!-- Footer Section Begin -->

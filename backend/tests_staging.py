@@ -3,6 +3,9 @@ import json
 import requests
 from src import params
 from src.bigquery import reset_logged_data, run_sql_file
+from src.bigquery import get_item_data
+from src.firestore import insert_to_firestore
+
 from unittest.mock import Mock
 
 import main
@@ -72,3 +75,30 @@ def test_orchestrator_staging():
     
     assert len(data) > 0
     assert type(data[0]) is dict
+
+def test_bigquery_download():
+    df_json = get_item_data(project_id="fashion-scraping")
+
+    assert type(df_json[0]) is dict
+
+def test_firetore_upload():
+
+    json_list = [
+        {'name': 'New York City', 'city_code':"NYC"},
+        {'name': 'San Francisco', 'city_code':"SF"}
+    ]
+    key_field = 'city_code'
+
+    collection = 'cities'
+    
+    insert_to_firestore(json_list,key_field,collection)
+
+
+def test_bigquery_to_firestore():
+
+    json_list = get_item_data(project_id="fashion-scraping")
+    key_field = 'item_ID'
+
+    collection = 'item_data'
+    
+    insert_to_firestore(json_list,key_field,collection)

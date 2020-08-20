@@ -23,7 +23,6 @@ def orchestrator(request):
         "Process Start":"Orchestrator - Starting scrapers ⏱"
     })
 
-
     if request_json and 'limit' in request_json:
         payloads = [{"website":site,"limit": int(request_json['limit'])} for site in params.SITES]
     else:

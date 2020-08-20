@@ -1,6 +1,7 @@
 from google.cloud import bigquery
 from google.cloud.exceptions import NotFound
 from datetime import datetime
+import pandas as pd
 import json
 
 from src import params
@@ -88,3 +89,14 @@ def run_sql_file(project_id, dataset_id, from_table_id, to_table_id, file):
     query_job = sql_to_table(project_id, dataset_id, to_table_id,sql)
 
     return query_job
+
+def get_item_data(project_id):
+    sql = """
+        SELECT 
+        * 
+        FROM `{}.prod.latest_items`
+        WHERE days_since_update <= 2 OR (days_since_seen >1 AND days_since_seen <=2)
+    """.format(project_id)
+
+    df = pd.read_gbq(query=sql,project_id=project_id,progress_bar_type=None)
+    return df.to_dict('records')
